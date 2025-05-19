@@ -1,194 +1,268 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Text Editor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Продвинутый Голосовой Блокнот</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        :root {
+            --primary: #2ecc71;
+            --background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            --text-color: #ffffff;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
             padding: 20px;
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text-color);
+            transition: all 0.3s;
         }
 
-        .editor-container {
-            background: rgba(255, 255, 255, 0.95);
-            width: 100%;
+        .container {
             max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.5);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            transform: translateY(-20px);
-            opacity: 0;
-            animation: slideUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            padding: 25px;
+            backdrop-filter: blur(10px);
         }
 
-        @keyframes slideUp {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
-        .toolbar {
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
+        .theme-selector {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .toolbar button {
-            background: none;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
+        .theme-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid transparent;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #4a5568;
         }
 
-        .toolbar button:hover {
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
+        .theme-btn.active {
+            border-color: var(--primary);
         }
 
-        .toolbar button.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .toolbar select {
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .toolbar select:hover {
-            border-color: #667eea;
-        }
-
-        .editor-content {
-            min-height: 500px;
-            padding: 30px;
-            outline: none;
-            font-size: 16px;
-            line-height: 1.6;
-            color: #2d3748;
-        }
-
-        .editor-content:focus {
-            box-shadow: inset 0 0 0 2px #667eea;
-        }
-
-        .word-count {
+        textarea {
+            width: 100%;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-color);
             padding: 15px;
-            background: rgba(255, 255, 255, 0.9);
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            text-align: right;
-            color: #4a5568;
+            border-radius: 10px;
+            font-size: 16px;
+            margin: 15px 0;
+            resize: vertical;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
             font-size: 14px;
         }
 
-        /* Анимации */
-        @keyframes buttonClick {
-            0% { transform: scale(1); }
-            50% { transform: scale(0.9); }
-            100% { transform: scale(1); }
+        .ai-chat {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
-        .click-animation {
-            animation: buttonClick 0.3s ease;
+        .gradient-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .font-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Предустановленные темы */
+        .theme-dark { 
+            --background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            --text-color: #ffffff;
+        }
+        .theme-light {
+            --background: linear-gradient(135deg, #f5f6fa, #dcdde1);
+            --text-color: #2d3436;
+        }
+        .theme-ocean {
+            --background: linear-gradient(135deg, #0984e3, #00cec9);
+            --text-color: #ffffff;
         }
     </style>
 </head>
 <body>
-    <div class="editor-container">
-        <div class="toolbar">
-            <button onclick="formatText('bold')" title="Жирный">
-                <i class="fas fa-bold"></i>
-            </button>
-            <button onclick="formatText('italic')" title="Курсив">
-                <i class="fas fa-italic"></i>
-            </button>
-            <button onclick="formatText('underline')" title="Подчеркивание">
-                <i class="fas fa-underline"></i>
-            </button>
-            <select id="fontName" onchange="formatText('fontName', this.value)">
-                <option value="Arial">Arial</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-            </select>
-            <select id="fontSize" onchange="formatText('fontSize', this.value)">
-                <option value="1">Маленький</option>
-                <option value="3" selected>Обычный</option>
-                <option value="5">Большой</option>
-            </select>
-            <button onclick="formatText('justifyLeft')" title="Выравнивание по левому краю">
-                <i class="fas fa-align-left"></i>
-            </button>
-            <button onclick="formatText('justifyCenter')" title="Выравнивание по центру">
-                <i class="fas fa-align-center"></i>
-            </button>
-            <button onclick="formatText('insertUnorderedList')" title="Маркированный список">
-                <i class="fas fa-list-ul"></i>
-            </button>
-            <button onclick="formatText('undo')" title="Отменить">
-                <i class="fas fa-undo"></i>
-            </button>
-            <button onclick="formatText('redo')" title="Повторить">
-                <i class="fas fa-redo"></i>
-            </button>
+    <div class="container">
+        <h1>🎨 Умный Блокнот с AI</h1>
+        
+        <div class="control-panel">
+            <div class="gradient-controls">
+                <input type="color" id="color1" value="#1a1a1a">
+                <input type="color" id="color2" value="#2d2d2d">
+                <select id="gradientType">
+                    <option value="linear">Линейный</option>
+                    <option value="radial">Радиальный</option>
+                </select>
+            </div>
+
+            <div class="font-controls">
+                <select id="fontSelector">
+                    <option value="Roboto">Roboto</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                </select>
+                <input type="range" id="fontSize" min="12" max="32" value="16">
+            </div>
+
+            <div class="theme-selector">
+                <button class="theme-btn theme-dark active" onclick="changeTheme('dark')">Тёмная</button>
+                <button class="theme-btn theme-light" onclick="changeTheme('light')">Светлая</button>
+                <button class="theme-btn theme-ocean" onclick="changeTheme('ocean')">Океан</button>
+            </div>
         </div>
-        <div class="editor-content" contenteditable="true"></div>
-        <div class="word-count">Слов: <span id="wordCount">0</span></div>
+
+        <div class="ai-chat" id="aiChat"></div>
+        
+        <textarea id="textArea" placeholder="Начните писать или использовать голосовой ввод..."></textarea>
+
+        <div>
+            <button onclick="toggleRecording()">🎤 Голосовой ввод</button>
+            <button onclick="downloadText()">💾 Сохранить</button>
+            <button onclick="printText()">🖨 Печать</button>
+            <button onclick="clearText()">❌ Очистить</button>
+            <button onclick="askAI()">🤖 Задать вопрос AI</button>
+        </div>
     </div>
 
     <script>
-        function formatText(command, value = null) {
-            document.execCommand(command, false, value);
-            updateWordCount();
-            addButtonAnimation(event.target);
+        // Настройки оформления
+        function updateDesign() {
+            const color1 = document.getElementById('color1').value;
+            const color2 = document.getElementById('color2').value;
+            const gradientType = document.getElementById('gradientType').value;
+            document.body.style.background = 
+                `${gradientType}-gradient(135deg, ${color1}, ${color2})`;
         }
 
-        function updateWordCount() {
-            const text = document.querySelector('.editor-content').innerText;
-            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
-            document.getElementById('wordCount').textContent = words.length;
+        // Смена темы
+        function changeTheme(theme) {
+            document.body.className = `theme-${theme}`;
+            document.querySelectorAll('.theme-btn').forEach(btn => 
+                btn.classList.remove('active'));
+            event.target.classList.add('active');
         }
 
-        function addButtonAnimation(button) {
-            button.classList.add('click-animation');
-            setTimeout(() => {
-                button.classList.remove('click-animation');
-            }, 300);
+        // Управление шрифтами
+        document.getElementById('fontSelector').addEventListener('change', function() {
+            document.body.style.fontFamily = this.value;
+        });
+
+        document.getElementById('fontSize').addEventListener('input', function() {
+            document.body.style.fontSize = this.value + 'px';
+        });
+
+        // Голосовой ввод
+        let recognition;
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'ru-RU';
+            recognition.continuous = true;
+
+            recognition.onresult = function(event) {
+                let transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                document.getElementById('textArea').value += transcript;
+            };
         }
 
-        // Обновление счетчика при вводе
-        document.querySelector('.editor-content').addEventListener('input', updateWordCount);
+        function toggleRecording() {
+            if (recognition) {
+                recognition.start();
+                event.target.textContent = '⏹ Остановить запись';
+            }
+        }
 
-        // Инициализация
-        document.querySelector('.editor-content').focus();
+        // Интеграция с AI (требуется API ключ)
+        async function askAI() {
+            const question = prompt('Введите ваш вопрос:');
+            if (!question) return;
+            
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_API_KEY'
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [{role: "user", content: question}]
+                    })
+                });
+                
+                const data = await response.json();
+                document.getElementById('aiChat').innerHTML += 
+                    `<p><strong>Вы:</strong> ${question}</p>
+                     <p><strong>AI:</strong> ${data.choices[0].message.content}</p>`;
+            } catch (error) {
+                alert('Ошибка подключения к AI');
+            }
+        }
+
+        // Дополнительные функции
+        function downloadText() {
+            const text = document.getElementById('textArea').value;
+            const blob = new Blob([text], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'document.txt';
+            a.click();
+        }
+
+        function printText() {
+            window.print();
+        }
+
+        function clearText() {
+            document.getElementById('textArea').value = '';
+        }
+
+        // Обновление фона при изменении цветов
+        document.querySelectorAll('input[type="color"]').forEach(input => {
+            input.addEventListener('input', updateDesign);
+        });
     </script>
 </body>
 </html>
